@@ -2,7 +2,7 @@
 #define SUBJECT_H
 #include <vector>
 
-// This was based largely upon the subject file from A4
+// This was based largely upon the subject file from mvc example
 
 class Observer;
 
@@ -11,11 +11,12 @@ class Subject {
 
   public:
     // Attach observer
-    void attach(Observer *o);
+    void attach( Observer *o );
     // Detach observer
-    void detach(Observer *o); 
+    void detach( Observer *o ); 
+  protected:
     // Notify observers of a change 
-    void notifyObservers();
+    void notify();
 };
 
 #endif

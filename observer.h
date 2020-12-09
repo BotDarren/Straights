@@ -1,16 +1,14 @@
 #ifndef _OBSERVER_H_
 #define _OBSERVER_H_
 
-// Based largely on the observer.h from A4
+// Based largely on the observer.h from the mvc lectures
 
 class Subject;
 
 class Observer {
   public:
-    // Pass in the Subject that called the notify method.
-    virtual void notify( Subject & whoNotified ) = 0;
-
-    virtual ~Observer() = default;
+    // Used to update the observers
+    virtual void update () = 0;
 };
 
 #endif

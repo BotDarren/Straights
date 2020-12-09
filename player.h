@@ -35,6 +35,9 @@ public:
     void recalculateValid();
     // Returns the list of valid plays for this player
     const std::vector<shared_ptr<Card>> getValidPlays();
-}
+    // Makes a play: Depending on the player, this will be delegated to a computer/human player
+    // This can either be playing a card or discarding a card
+    virtual Move play() = 0;
+};
 
 #endif
