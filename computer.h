@@ -2,11 +2,12 @@
 #define COMPUTER_H
 #include "player.h"
 #include "move.h"
+#include "board.h"
 
 class Computer : public Player {
 public:
     // Constructs a human player
-    Computer();
+    Computer(Board *model);
     // Makes a move: this can either be playing a card or discarding a card
     Move play() override;
 };

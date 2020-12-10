@@ -2,13 +2,15 @@
 #define MOVE_H
 #include "card.h"
 
-enum class MoveType { Play, Discard };
+enum class MoveType { Play, Discard, Rage, None };
 
 class Move {
     MoveType movetype;
     Card card;
     public:
-    Move(MoveType type, Card card);
+    Move();
+    void setType(MoveType type);
+    void setCard(Card c);
 };
 
 #endif

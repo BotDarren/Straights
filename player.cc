@@ -43,11 +43,11 @@ int Player::totalScore() {
 
 vector<shared_ptr<Card>> Player::getValidPlays() const {
     vector<shared_ptr<Card>> validmoves;
-    shared_ptr<Card> curcard = model->topCard();
     if (model->firstMove()) {
         Card startcard{Seven, Spade};
         validmoves.push_back(make_shared<Card>(startcard));
     } else {
+        shared_ptr<Card> curcard = model->topCard();
         for (int i = 0; i < hand.size(); i++) {
             if (hand.at(i)->getRank() == Seven)  {
                 validmoves.push_back(hand.at(i));
