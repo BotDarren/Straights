@@ -13,3 +13,11 @@ void Move::setType(MoveType type) {
 void Move::setCard(Card c) {
     card = c;
 }
+
+MoveType Move::getType() {
+    return movetype;
+}
+
+Card Move::getCard() {
+    return card;
+}

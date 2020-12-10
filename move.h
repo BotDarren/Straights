@@ -11,6 +11,8 @@ class Move {
     Move();
     void setType(MoveType type);
     void setCard(Card c);
+    MoveType getType();
+    Card getCard();
 };
 
 #endif

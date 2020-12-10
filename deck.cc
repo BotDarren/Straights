@@ -7,6 +7,14 @@
 #include <chrono>
 using namespace std;
 
+Deck::Deck() {
+    for (int i = 0; i < numSuits; i++) {
+        for (int n = 0; n < numRanks; n++) {
+            cards.emplace_back(make_shared<Card>(Suit(i), Rank(n)));
+        }
+    }
+}
+
 Deck::Deck(int seed) : seed{seed} {
     for (int i = 0; i < numSuits; i++) {
         for (int n = 0; n < numRanks; n++) {

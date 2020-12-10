@@ -10,11 +10,11 @@
 
 class Board : public Subject {
     // Holds the current deck
-    std::shared_ptr<Deck> deck;
+    Deck deck;
     // Holds the top score currently, will be recalculated at the end of each round
     int topscore;
     // Holds a vector of the 4 players
-    std::vector<std::shared_ptr<Player>> players;
+    std::vector<Player> players;
     // Holds the round number
     int roundnum;
     // Holds the current seed of the deck
@@ -22,16 +22,18 @@ class Board : public Subject {
     // Holds whether this is the first play of the round: default of true, will be changed
     bool firstPlay = true;
     // Stores the cards on the board
-    std::vector<std::shared_ptr<Card>> cards;
+    std::vector<Card> cards;
     // Which player is playing right now
     int curplayer;
 public:
     // Constructor with the given seed
     Board(int seed);
+    // Adds a player of the given type
+    void addPlayer(PlayerType type);
     // Sets the player to begin
     void setStart();
-    // Plays the provided card
-    void playCard();
+    // Makes the current player make a move: play a card or discard
+    void makeMove();
     // Deals the card
     void dealCard();
     // Starts the game
@@ -39,9 +41,9 @@ public:
     // Prints the deck
     void printDeck();
     // Returns the top card
-    std::shared_ptr<Card> topCard();
+    Card topCard();
     // Gets the players score
-    void getPlayerScore(int index);
+    int getPlayerScore(int index);
     // Returns whether or not the round is over
     bool roundOver();
     // Returns whether or not the game is over

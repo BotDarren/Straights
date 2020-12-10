@@ -7,10 +7,12 @@
 class Deck {
     // Stores the current cards in the deck (in order)
     std::vector<std::shared_ptr<Card>> cards;
-    // Stores the current seed of the deck
-    int seed;
+    // Stores the current seed of the deck: default seed of 0
+    int seed = 0;
 public:
-    // Constructor for the deck given the seed
+    // Constructor for the deck without a seed
+    Deck();
+    // Constructor for deck with a seed
     Deck(int seed);
     // Shuffles the deck with the given seed
     void shuffle();
