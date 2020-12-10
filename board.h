@@ -38,12 +38,16 @@ public:
     void start();
     // Prints the deck
     void printDeck();
+    // Returns the top card
+    std::shared_ptr<Card> topCard();
     // Gets the players score
     void getPlayerScore(int index);
     // Returns whether or not the round is over
     bool roundOver();
     // Returns whether or not the game is over
     bool gameOver();
+    // Returns whether or the current move is the first
+    bool firstMove();
     // Returns the winners: assuming the game is over
     std::vector<int> getWinners();
 };

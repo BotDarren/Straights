@@ -1,10 +1,12 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 #include "card.h"
+#include "move.h"
+#include "board.h"
 #include <vector>
 #include <memory>
 
-enum class PlayerType { Human, Computer };
+enum PlayerType { Human, Computer };
 
 class Player {
 protected:
@@ -18,9 +20,11 @@ protected:
     std::vector<std::shared_ptr<Card>> validplays;
     // What type of player: human/computer
     PlayerType type;
+    // Stores the current board that the player is playing on
+    Board *model;
 public:
     // Constructs a player with the given type
-    Player(PlayerType type);
+    Player(PlayerType type, Board *model);
     // Adds card to hand
     void addCard(Card c);
     // Switches the type of player: from human -> computer or vice versa
@@ -31,10 +35,8 @@ public:
     int roundScore();
     // Return the total score
     int totalScore();
-    // Recalculates the valid plays of the player
-    void recalculateValid();
     // Returns the list of valid plays for this player
-    const std::vector<shared_ptr<Card>> getValidPlays();
+    std::vector<std::shared_ptr<Card>> getValidPlays() const;
     // Makes a play: Depending on the player, this will be delegated to a computer/human player
     // This can either be playing a card or discarding a card
     virtual Move play() = 0;
