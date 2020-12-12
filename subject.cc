@@ -13,6 +13,6 @@ void Subject::detach(Observer *o) {
     }
 }
 
-void Subject::notifyObservers() {
-    for (auto &ob : observers) ob->notify( *this );
+void Subject::notify(State state) {
+    for (auto &ob : observers) ob->update(state);
 }

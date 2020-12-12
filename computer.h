@@ -9,7 +9,9 @@ public:
     // Constructs a human player
     Computer(Board *model);
     // Makes a move: this can either be playing a card or discarding a card
-    Move play() override;
+    Move play(Card c) override;
+    // Returns the type of player: Computer
+    PlayerType getType();
 };
 
 #endif

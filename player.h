@@ -6,7 +6,7 @@
 #include <vector>
 #include <memory>
 
-enum PlayerType { Human, Computer };
+enum class PlayerType { Human, Computer };
 
 class Player {
 protected:
@@ -27,6 +27,10 @@ public:
     Player(PlayerType type, Board *model);
     // Adds card to hand
     void addCard(Card c);
+    // Marks the card as played: removes the card from the hand of the player
+    void playedCard(Card c);
+    // Discards the given card from the hand
+    void discardCard(Card c);
     // Switches the type of player: from human -> computer or vice versa
     void switchType();
     // Whether or not the player will start the game (has seven of spades)
@@ -35,11 +39,17 @@ public:
     int roundScore();
     // Return the total score
     int totalScore();
+    // Returns the hand of the player
+    std::vector<std::shared_ptr<Card>> getHand() const;
+    // Returns the discarded cards of the player
+    std::vector<std::shared_ptr<Card>> getDiscard() const;
     // Returns the list of valid plays for this player
     std::vector<std::shared_ptr<Card>> getValidPlays() const;
-    // Makes a play: Depending on the player, this will be delegated to a computer/human player
-    // This can either be playing a card or discarding a card
-    virtual Move play() = 0;
+    // Makes a play: This will delegate the play to either the computer or
+    // Player depending on what type of player this player is
+    virtual Move play(Card c) = 0;
+    // Gets the type of player
+    virtual PlayerType getType() = 0;
 };
 
 #endif

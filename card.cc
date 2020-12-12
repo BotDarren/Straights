@@ -43,7 +43,7 @@ std::ostream &operator<<(std::ostream &out, const Card &c) {
     } else if (crank == Nine) {
         out << "9";
     } else if (crank == Ten) {
-        out << "10";
+        out << "T";
     } else if (crank == Jack) {
         out << "J";
     } else if (crank == Queen) {
@@ -68,17 +68,13 @@ std::istream &operator>>(std::istream &in, Card &card) {
     // Stores the possible suits
     string suits = "CDHS";
     // Stores the possible ranks
-    string ranks = "A234567891JQK";
+    string ranks = "A23456789TJQK";
     string tmp;
     in >> tmp;
     // Finds the rank and sets the card rank to it
     card.cardrank = (Rank)ranks.find(tmp.at(0));
     // Finds the suit and sets the card suit to it
-    if (card.cardrank == Ten) {
-        card.cardsuit = (Suit)suits.find(tmp.at(2));
-    } else {
-        card.cardsuit = (Suit)suits.find(tmp.at(1));
-    }
+    card.cardsuit = (Suit)suits.find(tmp.at(1));
 }
 
 bool operator==(const Card &c1, const Card &c2) {

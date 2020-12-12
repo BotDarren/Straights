@@ -6,7 +6,7 @@ using namespace std;
 
 Computer::Computer(Board *model) : Player{PlayerType::Computer,model} {}
 
-Move Computer::play() {
+Move Computer::play(Card c) {
     Move tmp{};
     vector<shared_ptr<Card>> validmoves = getValidPlays();
     if (validmoves.size() > 0) {
@@ -15,4 +15,10 @@ Move Computer::play() {
         tmp.setType(MoveType::Discard);
     }
     tmp.setCard(*(hand.at(0)));
+    return tmp;
 }
+
+PlayerType Computer::getType() {
+    return PlayerType::Computer;
+}
+

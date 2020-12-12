@@ -1,6 +1,7 @@
 #ifndef SUBJECT_H
 #define SUBJECT_H
 #include <vector>
+#include "board.h"
 
 // This was based largely upon the subject file from mvc example
 
@@ -15,8 +16,8 @@ class Subject {
     // Detach observer
     void detach( Observer *o ); 
   protected:
-    // Notify observers of a change 
-    void notify();
+    // Notify observers while passing in the current State
+    void notify(State state);
 };
 
 #endif

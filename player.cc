@@ -1,19 +1,43 @@
 #include <vector>
 #include <memory>
+#include <algorithm>
 #include "player.h"
 #include "card.h"
 
 Player::Player(PlayerType type, Board *model) : type{type}, model{model} {}
 
 void Player::addCard(Card c) {
-    hand.emplace_back(c);
+    auto tmp = make_shared<Card>(c);
+    hand.push_back(tmp);
+}
+
+void Player::playedCard(Card c) {
+    // Used to store the index where the card c is in the hand of the player
+    int index;
+    for (int i = 0; i < hand.size(); i++) {
+        if (*(hand.at(i)) == c) {
+            index = i;
+        }
+    }
+    // Remove the shared pointer at the specified index
+    hand.erase(std::remove(hand.begin(),hand.end(),hand.at(index)));
+
+}
+
+void Player::discardCard(Card c) {
+    for (int i = 0; i < hand.size(); i++) {
+        if (*(hand.at(i)) == c) {
+            discardpile.push_back((hand.at(i)));
+            playedCard(c);
+        }
+    }
 }
 
 void Player::switchType() {
-    if (type == Human) {
-        type == Computer;
-    } else if (type == Computer) {
-        type == Human;
+    if (type == PlayerType::Human) {
+        type == PlayerType::Computer;
+    } else if (type == PlayerType::Computer) {
+        type == PlayerType::Human;
     }
 }
 
@@ -39,6 +63,14 @@ int Player::totalScore() {
     int sum;
     sum = score + roundScore();
     return sum;
+}
+
+vector<shared_ptr<Card>> Player::getHand() const {
+    return hand;
+}
+
+vector<shared_ptr<Card>> Player::getDiscard() const {
+    return discardpile;
 }
 
 vector<shared_ptr<Card>> Player::getValidPlays() const {

@@ -23,6 +23,10 @@ Deck::Deck(int seed) : seed{seed} {
     }
 }
 
+unsigned int Deck::getSeed() {
+    return seed;
+}
+
 // This function is based on the shuffle.cc that was provided for this project
 void Deck::shuffle() {
     std::default_random_engine rng{seed};

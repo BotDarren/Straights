@@ -1,4 +1,4 @@
-#include <
+#include "text_view.h"
 #include "human.h"
 #include "move.h"
 #include "player.h"
@@ -7,7 +7,7 @@ using namespace std;
 
 Human::Human(Board *model) : Player{PlayerType::Human,model} {}
 
-Move Human::play() {
+Move Human::play(Card c) {
     Move tmp{};
     vector<shared_ptr<Card>> validmoves = getValidPlays();
     if (validmoves.size() > 0) {
@@ -15,6 +15,10 @@ Move Human::play() {
     } else {
         tmp.setType(MoveType::Discard);
     }
-    // Either find someway to make the move or read input
-    // PENDING PIAZZA POST
+    tmp.setCard(c);
+    return tmp;
+}
+
+PlayerType Human::getType() {
+    return PlayerType::Human;
 }
