@@ -4,9 +4,9 @@
 #include "board.h"
 using namespace std;
 
-Computer::Computer(Board *model) : Player{PlayerType::Computer,model} {}
+Computer::Computer(Board *model) : Player{model} {}
 
-Move Computer::play(Card c) {
+Move Computer::play(Card c, bool mtype) {
     Move tmp{};
     vector<shared_ptr<Card>> validmoves = getValidPlays();
     if (validmoves.size() > 0) {
@@ -14,7 +14,12 @@ Move Computer::play(Card c) {
     } else {
         tmp.setType(MoveType::Discard);
     }
-    tmp.setCard(*(hand.at(0)));
+    if (model->firstMove()) {
+        Card sevenspade = Card(Seven,Spade);
+        tmp.setCard(sevenspade);
+    } else {
+        tmp.setCard(*(hand.at(0)));
+    }
     return tmp;
 }
 

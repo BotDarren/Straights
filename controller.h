@@ -16,23 +16,29 @@
 #include "player.h"
 #include "deck.h"
 
+class Board;
+class Player;
+enum class PlayerType;
+
 class Controller {
-    // Pointer to the view
+    // Pointer to the model
     Board *model;
 public:
     Controller( Board* model );
     // Starts the game
     void startGame();
+    // Plays a new round of the current game: assuming that the game has not ended
+    void nextRound();
     // Add a player with the given type
     void addPlayer( PlayerType type );
     // Quits the current game: cleanup so no leakage
     void endGame();
     // Happens when a player chooses to rage quit: the human is replaced with a computer
     std::shared_ptr<Player> RageQuit();
-    // Prints the current deck of the player: 13 cards per line (not part of official game)
-    void printDeck( Player &player );
     // Sets the seed for the shuffling
     void setSeed( int seed );
+    // Plays the given card: this is used by a human
+    void makeMove(Card c = Card(Ace,Spade), bool mtype = true);
 };
 
 #endif

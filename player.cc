@@ -4,7 +4,7 @@
 #include "player.h"
 #include "card.h"
 
-Player::Player(PlayerType type, Board *model) : type{type}, model{model} {}
+Player::Player(Board *model) : model{model}, score{0} {}
 
 void Player::addCard(Card c) {
     auto tmp = make_shared<Card>(c);
@@ -12,16 +12,11 @@ void Player::addCard(Card c) {
 }
 
 void Player::playedCard(Card c) {
-    // Used to store the index where the card c is in the hand of the player
-    int index;
     for (int i = 0; i < hand.size(); i++) {
         if (*(hand.at(i)) == c) {
-            index = i;
+            hand.erase(std::remove(hand.begin(),hand.end(),hand.at(i)));
         }
     }
-    // Remove the shared pointer at the specified index
-    hand.erase(std::remove(hand.begin(),hand.end(),hand.at(index)));
-
 }
 
 void Player::discardCard(Card c) {
@@ -30,14 +25,6 @@ void Player::discardCard(Card c) {
             discardpile.push_back((hand.at(i)));
             playedCard(c);
         }
-    }
-}
-
-void Player::switchType() {
-    if (type == PlayerType::Human) {
-        type == PlayerType::Computer;
-    } else if (type == PlayerType::Computer) {
-        type == PlayerType::Human;
     }
 }
 
@@ -51,8 +38,16 @@ bool Player::willStart() {
     return false;
 }
 
+int Player::getScore() {
+    return score;
+}
+
+void Player::updateScore() {
+    score = totalScore();
+}
+
 int Player::roundScore() {
-    int sum;
+    int sum = 0;
     for (int i = 0; i < discardpile.size(); i++) {
         sum += (*(discardpile.at(i))).getValue();
     }
@@ -79,18 +74,45 @@ vector<shared_ptr<Card>> Player::getValidPlays() const {
         Card startcard{Seven, Spade};
         validmoves.push_back(make_shared<Card>(startcard));
     } else {
-        shared_ptr<Card> curcard = model->topCard();
-        for (int i = 0; i < hand.size(); i++) {
-            if (hand.at(i)->getRank() == Seven)  {
-                validmoves.push_back(hand.at(i));
-            } else if (hand.at(i)->getSuit() == curcard->getSuit()) {
-                if (hand.at(i)->getRank() == curcard->getRank() + 1) {
-                    validmoves.push_back(hand.at(i));
-                } else if (hand.at(i)->getRank() == curcard->getRank() - 1) {
-                    validmoves.push_back(hand.at(i));
+        for (auto curcard : model->getPlayed()) {
+            for (int i = 0; i < hand.size(); i++) {
+                if (hand.at(i)->getRank() == Seven)  {
+                    // Prevent duplicates
+                    if (!(find(validmoves.begin(), validmoves.end(), hand.at(i)) != validmoves.end())) {
+                        validmoves.push_back(hand.at(i));
+                    }
+                } else if (hand.at(i)->getSuit() == curcard->getSuit()) {
+                    if (hand.at(i)->getRank() == curcard->getRank() + 1) {
+                        // Prevent duplicates
+                        if (!(find(validmoves.begin(), validmoves.end(), hand.at(i)) != validmoves.end())) {
+                        validmoves.push_back(hand.at(i));
+                        }
+                    } else if (hand.at(i)->getRank() == curcard->getRank() - 1) {
+                        // Prevent duplicates
+                        if (!(find(validmoves.begin(), validmoves.end(), hand.at(i)) != validmoves.end())) {
+                        validmoves.push_back(hand.at(i));
+                        }
+                    }
                 }
             }
         }
     }
     return validmoves;
+}
+
+void Player::setHand(std::vector<std::shared_ptr<Card>> h) {
+    hand = h;
+}
+
+void Player::setDiscard(std::vector<std::shared_ptr<Card>> d) {
+    discardpile = d;
+}
+
+void Player::setScore(int s) {
+    score = s;
+}
+
+void Player::reset() {
+    hand.clear();
+    discardpile.clear();
 }

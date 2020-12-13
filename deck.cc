@@ -10,7 +10,8 @@ using namespace std;
 Deck::Deck() {
     for (int i = 0; i < numSuits; i++) {
         for (int n = 0; n < numRanks; n++) {
-            cards.emplace_back(make_shared<Card>(Suit(i), Rank(n)));
+            shared_ptr<Card> tmp = make_shared<Card>(static_cast<Rank>(n),static_cast<Suit>(i));
+            cards.push_back(tmp);
         }
     }
 }
@@ -18,7 +19,8 @@ Deck::Deck() {
 Deck::Deck(int seed) : seed{seed} {
     for (int i = 0; i < numSuits; i++) {
         for (int n = 0; n < numRanks; n++) {
-            cards.emplace_back(make_shared<Card>(Suit(i), Rank(n)));
+            shared_ptr<Card> tmp = make_shared<Card>(static_cast<Rank>(n),static_cast<Suit>(i));
+            cards.push_back(tmp);
         }
     }
 }
@@ -27,12 +29,14 @@ unsigned int Deck::getSeed() {
     return seed;
 }
 
+void Deck::setSeed(unsigned int s) {
+    seed = s;
+}
+
 // This function is based on the shuffle.cc that was provided for this project
 void Deck::shuffle() {
     std::default_random_engine rng{seed};
-    for ( int i = 0; i < 1000; i++ ) {
-		std::shuffle( cards.begin(), cards.end(), rng );
-	}
+	std::shuffle( cards.begin(), cards.end(), rng );
 }
 
 vector<shared_ptr<Card>> Deck::getCards() const {

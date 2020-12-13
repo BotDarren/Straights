@@ -7,19 +7,20 @@
 #include <memory>
 using namespace std;
 
-Board::Board() : topscore{0}, roundnum{0}, curplayer{0} {
+ArgExn::ArgExn( std::string message ): message{message} {}
+
+Board::Board() : roundnum{0}, curplayer{0} {
     auto tmp = make_shared<Deck>();
     deck = tmp;
-    seed = deck->getSeed();
 }
 
-Board::Board(int seed) : topscore{0}, roundnum{0}, seed{seed}, curplayer{0} {
+Board::Board(int seed) : roundnum{0}, curplayer{0} {
     auto tmp = make_shared<Deck>(seed);
     deck = tmp;
 }
 
 void Board::setSeed(int s) {
-    seed = s;
+    deck->setSeed(s);
 }
 
 void Board::addPlayer(PlayerType type) {
@@ -30,7 +31,6 @@ void Board::addPlayer(PlayerType type) {
         auto tmp = make_shared<Human>(this);
         players.push_back(tmp);
     }
-    notify(curstate);
 }
 
 void Board::setStart() {
@@ -43,21 +43,41 @@ void Board::setStart() {
 }
 
 void Board::rage() {
-    players.at(curplayer)->switchType();
-    notify(curstate);
+    auto oldhuman = players.at(curplayer);
+    auto tmp = make_shared<Computer>(this);
+    tmp->setHand(oldhuman->getHand());
+    tmp->setDiscard(oldhuman->getDiscard());
+    tmp->setScore(oldhuman->getScore());
+    players.erase(players.begin() + curplayer);
+    players.insert(players.begin() + curplayer, tmp);
+    notify(State::RAGEQUIT);
 }
 
-void Board::makeMove(Card c) {
-    Move tmp = players.at(curplayer)->play(c);
+void Board::makeMove(Card c, bool mtype) {
+    Move tmp = players.at(curplayer)->play(c, mtype);
     MoveType type = tmp.getType();
     Card movecard = tmp.getCard();
     if (type == MoveType::Play) {
-        cards.emplace_back(c);
-        players.at(curplayer)->playedCard(c);
+        shared_ptr<Card> tmp = make_shared<Card>(movecard.getRank(),movecard.getSuit());
+        cards.push_back(tmp);
+        players.at(curplayer)->playedCard(movecard);
+        firstplay = false;
+        notify(State::PLAY);
     } else if (type == MoveType::Discard) {
-        players.at(curplayer)->discardCard(c);
+        players.at(curplayer)->discardCard(movecard);
+        notify(State::DISCARD);
+    } else if (type == MoveType::None && mtype) {
+        throw ArgExn("This is not a legal play");
+    } else if (type == MoveType::None && !mtype) {
+        throw ArgExn("You have a legal play. You may not discard");
     }
-    notify(curstate);
+    curplayer++;
+    if (curplayer == 4) {
+        curplayer = 0;
+    }
+    if (players.at(curplayer)->getType() == PlayerType::Human || roundOver()) {
+        notify(State::PRINTCARD);
+    }
 }
 
 void Board::dealCard() {
@@ -74,17 +94,69 @@ void Board::dealCard() {
     for (int i = 39; i < 52; i++) {
         players.at(3)->addCard(*(curdeck.at(i)));
     }
-    notify(curstate);
 }
 
-void Board::start() {}
+int Board::getCurrentPlayer() {
+    return curplayer;
+}
+
+vector<shared_ptr<Card>> Board::getDeck() {
+    return deck->getCards();
+}
+
+vector<shared_ptr<Card>> Board::getPlayed() {
+    return cards;
+}
+
+vector<shared_ptr<Card>> Board::getHand() {
+    return players.at(curplayer)->getHand();
+}
+
+vector<shared_ptr<Card>> Board::getDiscard() {
+    return players.at(curplayer)->getDiscard();
+}
+
+vector<shared_ptr<Card>> Board::getValidPlays() {
+    return players.at(curplayer)->getValidPlays();
+}
+
+vector<shared_ptr<Player>> Board::getPlayers() {
+    return players;
+}
+
+PlayerType Board::getPlayerType() {
+    return players.at(curplayer)->getType();
+}
+
+void Board::start() {
+    cards.clear();
+    roundnum = 0;
+    nextRound();
+}
 
 void Board::nextRound() {
-
+    firstplay = true;
+    cards.clear();
+    roundnum++;
+    for (shared_ptr<Player> player : players) {
+        player->reset();
+    }
+    deck->shuffle();
+    dealCard();
+    setStart();
+    notify(State::NEWROUND);
+    if (players.at(curplayer)->getType() == PlayerType::Human) {
+        notify(State::PRINTCARD);
+    }
 }
 
 shared_ptr<Card> Board::topCard() {
     return cards.at(cards.size() - 1);
+}
+
+shared_ptr<Card> Board::topDiscard() {
+    vector<shared_ptr<Card>> tmp = getDiscard();
+    return tmp.at(tmp.size() - 1);
 }
 
 int Board::getPlayerScore(int index) {
@@ -92,17 +164,22 @@ int Board::getPlayerScore(int index) {
 }
 
 bool Board::roundOver() {
-   for (int i = 0; i < 4; i++) {
-       if (!players.at(i)->getHand().empty()) {
+   for (int i = 0; i < players.size(); i++) {
+       if (!(players.at(i)->getHand().empty())) {
            return false;
        }
    }
+   notify(State::ENDROUND);
+   for (shared_ptr<Player> player : players) {
+        player->updateScore();
+    }
    return true;
 }
 
 bool Board::gameOver() {
-     for (int i = 0; i < 4; i++) {
-        if (players.at(i)->totalScore() >= 80) {
+     for (int i = 0; i < players.size(); i++) {
+        if (players.at(i)->getScore() >= 80) {
+            notify(State::ENDGAME);
             return true;
         }
     }
@@ -112,14 +189,3 @@ bool Board::gameOver() {
 bool Board::firstMove() {
     return firstplay;
 }
-
-vector<int> Board::getWinners() {
-    vector<int> winners;
-    for (int i = 0; i < 4; i++) {
-        if (players.at(i)->totalScore() >= 80) {
-            winners.push_back(i);
-        }
-    }
-    return winners;
-}
-

@@ -21,22 +21,26 @@ void Controller::startGame() {
     model->start();
 }
 
+void Controller::nextRound() {
+    model->nextRound();
+}
+
 void Controller::addPlayer( PlayerType type ) {
     model->addPlayer(type);
 }
 
 void Controller::endGame() {
-    //TO DO
+    exit(0);
 }
 
 shared_ptr<Player> Controller::RageQuit() {
     model->rage();
 }
 
-void Controller::printDeck( Player &player ) {
-    model->printDeck();
-}
-
 void Controller::setSeed( int seed ) {
     model->setSeed(seed);
+}
+
+void Controller::makeMove(Card c, bool mtype) {
+    model->makeMove(c, mtype);
 }

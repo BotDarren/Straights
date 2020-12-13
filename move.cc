@@ -1,10 +1,7 @@
 #include "move.h"
 using namespace std;
 
-Move::Move() : movetype{MoveType::None} {
-    Card tmp = Card{Jack, Club};
-    card = tmp;
-}
+Move::Move() : movetype{MoveType::None}, card(Jack, Club) {}
 
 void Move::setType(MoveType type) {
     movetype = type;

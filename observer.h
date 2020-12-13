@@ -1,6 +1,5 @@
 #ifndef _OBSERVER_H_
 #define _OBSERVER_H_
-#include "board.h"
 
 // Based largely on the observer.h from the mvc lectures
 

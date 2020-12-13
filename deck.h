@@ -10,7 +10,7 @@ class Deck {
     std::vector<std::shared_ptr<Card>> cards;
     // Stores the current seed of the deck: default seed of the current time
     // This code is copied from the shuffle.cc file that was provided
-    int seed = std::chrono::system_clock::now().time_since_epoch().count();;
+    unsigned int seed = std::chrono::system_clock::now().time_since_epoch().count();;
 public:
     // Constructor for the deck without a seed
     Deck();
@@ -18,6 +18,8 @@ public:
     Deck(int seed);
     // Returns the seed that the deck is using
     unsigned int getSeed();
+    // Sets the seed for the deck
+    void setSeed(unsigned int s);
     // Shuffles the deck with the given seed
     void shuffle();
     // Returns the cards in the deck

@@ -3,6 +3,7 @@
 #include "controller.h"
 #include "board.h"
 #include "observer.h"
+#include "move.h"
 #include <string>
 
 class View : public Observer {
@@ -10,16 +11,20 @@ class View : public Observer {
     Board *model;
     // The controller, this is used for the view to control the model
     Controller *controller;
-    // Processes input
-    void nextCommand();
 public:
+    // Processes input: gets the next command
+    void nextCommand();
     // Constructor for the view given the controller and the model
     View (Controller *controller, Board *model);
     // Destructor for the view
     virtual ~View();
-    virtual void update();
-    // Gets the card if the current command is a play/discard
-    std::string inputCard();
+    // Sets the players: used in the beginning of the game
+    void setPlayers();
+    virtual void update(State state);
+    // Prints the table as indicated in the project outline
+    void printTable();
+    // Prints the deck: with 13 cards per line
+    void printDeck();
 };
 
 #endif

@@ -1,10 +1,9 @@
 #ifndef SUBJECT_H
 #define SUBJECT_H
 #include <vector>
-#include "board.h"
 
 // This was based largely upon the subject file from mvc example
-
+enum class State;
 class Observer;
 
 class Subject {
