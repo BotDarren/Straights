@@ -5,7 +5,7 @@
 #include <string>
 using namespace std;
 
-View::View (Controller *controller, Board *model) : controller{controller}, model{model} {
+View::View (Controller *controller, Board *model) : model{model}, controller{controller} {
     // Attaches the view as an observer of the model board
     model->attach(this);
 }
@@ -19,6 +19,7 @@ void View::setPlayers() {
         // Which player are we currently filling: this format for input is based on main file from A5
         unsigned int playernum = model->getPlayers().size() + 1;
         cout << "Is Player" << playernum << " a human (h) or a computer (c)?" << endl;
+        // Format of user input based on A5 main file
         string s;
         getline(cin, s);
         istringstream iss{s};
@@ -51,6 +52,7 @@ void View::nextCommand() {
     } else if (cmd == "play") {
         try {
                 if (iss.eof()) {
+                    // Check if there is any card that is given
                     cerr << "Play failed. Please use play [Card]." << endl;
                 } else {
                     // Temporary card that will be read into: default to ace of spade
@@ -65,6 +67,7 @@ void View::nextCommand() {
     } else if (cmd == "discard") {
         try {
                 if (iss.eof()) {
+                    // Check if there is any card that is given
                     cerr << "Discard failed. Please use discard [Card]." << endl;
                 } else {
                     // Temporary card that will be read into: default to ace of spade
@@ -77,12 +80,13 @@ void View::nextCommand() {
             cerr << e.message << endl;
         }
     } else {
-        std::cerr << "Unrecognized command " << cmd << "!" << std::endl;
+        // Prompt if the command is not recognized
+        cerr << "Unrecognized command " << cmd << "!" << endl;
     }
 }
 
 void View::update(State state) {
-    if (state == State::PRINTCARD) {
+    if (state == State::PRINTTABLE) {
         printTable();
     } else if (state == State::NEWROUND) {
         int playernum = model->getCurrentPlayer() + 1;
@@ -100,14 +104,19 @@ void View::update(State state) {
         cout << "Player" << playernum << " discards " << topdiscarded << "." << endl;
     } else if (state == State::ENDROUND) {
         vector<shared_ptr<Player>> tmp = model->getPlayers();
-        for (int i = 0; i < tmp.size(); i++) {
+        // Iterates through the players
+        for (unsigned int i = 0; i < tmp.size(); i++) {
+            // i+1 as i is the index starting at 0
             cout << "Player" << (i + 1) << "'s discards: ";
             vector<shared_ptr<Card>> listdiscard = tmp.at(i)->getDiscard();
             for (shared_ptr<Card> discards : listdiscard) {
+                // Prints the list of discarded cards
                 cout << *discards << " ";
             }
             cout << endl;
+            // i+1 as i is the index starting at 0
             cout << "Player" << (i + 1) << "'s score: ";
+            // Gets the old score, round score and total score and prints it out
             cout << tmp.at(i)->getScore() << " + " << tmp.at(i)->roundScore() << " = " << tmp.at(i)->totalScore() << endl;
         }
     } else if (state == State::ENDGAME) {
@@ -116,15 +125,16 @@ void View::update(State state) {
         // a player would have more than 10000 points (could also be int max)
         int lowestscore = 10000;
         // Finds the lowest score among the players
-        for (int i = 0; i < tmp.size(); i++) {
+        for (unsigned int i = 0; i < tmp.size(); i++) {
             if (tmp.at(i)->totalScore() < lowestscore) {
                 // If a lower score is found, we set the lowest score to that score
                 lowestscore = tmp.at(i)->totalScore();
             }
         }
         // All players with the lowest score have won
-        for (int i = 0; i < tmp.size(); i++) {
+        for (unsigned int i = 0; i < tmp.size(); i++) {
             if (tmp.at(i)->totalScore() == lowestscore) {
+                // i+1 as i is the index starting at 0
                 cout << "Player" << (i + 1) << " wins!" << endl;
             }
         }
@@ -137,6 +147,7 @@ void View::printTable() {
     vector<shared_ptr<Card>> validplays = model->getValidPlays();
     cout << "Cards on the table:" << endl;
     cout << "Clubs: ";
+    // Prints all the club cards that have been played
     for (shared_ptr<Card> card : curtable) {
         if (card->getSuit() == Club) {
             if (card->getRank() == 0) {
@@ -156,6 +167,7 @@ void View::printTable() {
     }
     cout << endl;
     cout << "Diamonds: ";
+    // Print all the diamond cards that have been played
     for (shared_ptr<Card> card : curtable) {
         if (card->getSuit() == Diamond) {
             if (card->getRank() == 0) {
@@ -175,6 +187,7 @@ void View::printTable() {
     }
     cout << endl;
     cout << "Hearts: ";
+    // Print all the heart cards that have been played
     for (shared_ptr<Card> card : curtable) {
         if (card->getSuit() == Heart) {
             if (card->getRank() == 0) {
@@ -194,6 +207,7 @@ void View::printTable() {
     }
     cout << endl;
     cout << "Spades: ";
+    // Print all the spade cards that have been played
     for (shared_ptr<Card> card : curtable) {
         if (card->getSuit() == Spade) {
             if (card->getRank() == 0) {
@@ -213,11 +227,13 @@ void View::printTable() {
     }
     cout << endl;
     cout << "Your hand: ";
+    // Prints the players hand
     for (shared_ptr<Card> card : playerhand) {
         cout << *card << " ";
     }
     cout << endl;
     cout << "Legal plays: ";
+    // Prints the valid plays of the player
     for (shared_ptr<Card> card : validplays) {
         cout << *card << " ";
     }
@@ -225,12 +241,16 @@ void View::printTable() {
 }
 
 void View::printDeck() {
+    // Gets the cards from the deck
     vector<shared_ptr<Card>> tmpdeck = model->getDeck();
-    for (int i = 0; i < tmpdeck.size(); i++) {
+    for (unsigned int i = 0; i < tmpdeck.size(); i++) {
+        // If we have printed 13 cards then we print a new line
         if (i % 13 == 0 && i > 0) {
             cout << endl;
         }
+        // Print the card and a space
         cout << *(tmpdeck.at(i)) << " ";
     }
+    // At the end print a new line
     cout << endl;
 }

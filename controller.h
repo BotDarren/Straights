@@ -9,6 +9,7 @@
  *  Copyright 2009, 2017 UW. All rights reserved.
  *
  */
+// Cited as I based some of the code on the model in the MVC design pattern folder
 
 #ifndef CONTROLLER_H
 #define CONTROLLER_H
@@ -22,6 +23,7 @@ class Controller {
     // Pointer to the model
     Board *model;
 public:
+    // Constructor for the controller given the board
     Controller( Board* model );
     // Starts the game
     void startGame();
@@ -29,13 +31,14 @@ public:
     void nextRound();
     // Add a player with the given type
     void addPlayer( PlayerType type );
-    // Quits the current game: cleanup so no leakage
+    // Quits the current game: throws an exception
     void endGame();
     // Happens when a player chooses to rage quit: the human is replaced with a computer
     void RageQuit();
     // Sets the seed for the shuffling
-    void setSeed( int seed );
-    // Plays the given card: this is used by a human
+    void setSeed( unsigned int seed );
+    // Plays the given card: there are default values in the event that this is called
+    // by a computer. The mtype represents the type of move: true = play, false = discard
     void makeMove(Card c = Card(Ace,Spade), bool mtype = true);
 };
 

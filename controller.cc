@@ -29,16 +29,14 @@ void Controller::addPlayer( PlayerType type ) {
 }
 
 void Controller::endGame() {
-    // This seems to handle cleanup as well as I used smart pointers
-    // There does not seem to be any memory leaks
-    exit(0);
+    throw ArgExn("Game Over. Game ended by user");
 }
 
 void Controller::RageQuit() {
     model->rage();
 }
 
-void Controller::setSeed( int seed ) {
+void Controller::setSeed( unsigned int seed ) {
     model->setSeed(seed);
 }
 

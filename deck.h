@@ -14,19 +14,16 @@ class Deck {
 public:
     // Constructor for the deck without a seed
     Deck();
-    // Constructor for deck with a seed
-    Deck(int seed);
+    // Constructor for the deck with a seed
+    Deck(unsigned int seed);
     // Returns the seed that the deck is using
-    unsigned int getSeed();
+    unsigned int getSeed() const;
     // Sets the seed for the deck
     void setSeed(unsigned int s);
-    // Shuffles the deck with the given seed
+    // Shuffles the deck with the deck seed
     void shuffle();
     // Returns the cards in the deck
     std::vector<std::shared_ptr<Card>> getCards() const;
 };
-
-// This is used to print a deck
-std::ostream &operator<<(std::ostream &out, const Deck &deck);
 
 #endif

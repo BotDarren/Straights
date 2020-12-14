@@ -10,22 +10,24 @@ using namespace std;
 Deck::Deck() {
     for (int i = 0; i < numSuits; i++) {
         for (int n = 0; n < numRanks; n++) {
+            // Creates a card with the given rank and suit and pushes it to the end of the deck
             shared_ptr<Card> tmp = make_shared<Card>(static_cast<Rank>(n),static_cast<Suit>(i));
             cards.push_back(tmp);
         }
     }
 }
 
-Deck::Deck(int seed) : seed{seed} {
+Deck::Deck(unsigned int seed) : seed{seed} {
     for (int i = 0; i < numSuits; i++) {
         for (int n = 0; n < numRanks; n++) {
+            // Creates a card with the given rank and suit and pushes it to the end of the deck
             shared_ptr<Card> tmp = make_shared<Card>(static_cast<Rank>(n),static_cast<Suit>(i));
             cards.push_back(tmp);
         }
     }
 }
 
-unsigned int Deck::getSeed() {
+unsigned int Deck::getSeed() const {
     return seed;
 }
 
@@ -41,18 +43,4 @@ void Deck::shuffle() {
 
 vector<shared_ptr<Card>> Deck::getCards() const {
     return cards;
-}
-
-std::ostream &operator<<(std::ostream &out, const Deck &deck) {
-    int curcount = 0;
-    int numcards = numSuits * numRanks;
-    vector<shared_ptr<Card>> deckcards = deck.getCards();
-    for (int i = 0; i < numcards; i++) {
-        if (curcount == 13) {
-            out << endl << *(deckcards.at(i));
-        } else {
-            out << *(deckcards.at(i));
-        }
-    }
-    return out;
 }

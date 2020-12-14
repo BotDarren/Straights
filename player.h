@@ -20,9 +20,9 @@ protected:
     // Stores the current board that the player is playing on
     Board *model;
 public:
-    // Constructs a player with the given type
+    // Constructs a player with the given board
     Player(Board *model);
-    // Adds card to hand
+    // Adds card to hand of the player
     void addCard(Card c);
     // Marks the card as played: removes the card from the hand of the player
     void playedCard(Card c);
@@ -52,10 +52,11 @@ public:
     void setScore(int s);
     // Makes a play: This will delegate the play to either the computer or
     // Player depending on what type of player this player is
+    // mtype == true represents a play and mtype == false represents discard
     virtual Move play(Card c, bool mtype) = 0;
     // Gets the type of player
-    virtual PlayerType getType() = 0;
-    // Resets the hand and discard and valid plays pile of the current player
+    virtual PlayerType getType() const = 0;
+    // Resets the hand and discard of the current player
     void reset();
 };
 

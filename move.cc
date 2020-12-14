@@ -11,10 +11,10 @@ void Move::setCard(Card c) {
     card = c;
 }
 
-MoveType Move::getType() {
+MoveType Move::getType() const {
     return movetype;
 }
 
-Card Move::getCard() {
+Card Move::getCard() const {
     return card;
 }

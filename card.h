@@ -4,7 +4,9 @@
 #include <istream>
 using namespace std;
 
+// The number of possible ranks for a card
 const int numRanks = 13;
+// The number of possible suits for a card
 const int numSuits = 4;
 // The possible suits of cards
 enum Suit { Club, Diamond, Heart, Spade };
@@ -13,8 +15,11 @@ enum Rank { Ace, Two, Three, Four, Five, Six,
                 Seven, Eight, Nine, Ten, Jack, Queen, King };
 
 class Card {
+    // Sets the input operator as a friend class, so that it can read into a card
     friend istream &operator>>(std::istream &in, Card &card);
+    // Stores the suit of the card
     Suit cardsuit;
+    // Stores the rank of the card
     Rank cardrank;
    public:        
     // Constructor for a card, given its rank and its suit

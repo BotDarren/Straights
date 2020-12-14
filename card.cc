@@ -69,14 +69,17 @@ std::istream &operator>>(std::istream &in, Card &card) {
     string suits = "CDHS";
     // Stores the possible ranks
     string ranks = "A23456789TJQK";
+    // Reads the string for a card into tmp
     string tmp;
     in >> tmp;
     // Finds the rank and sets the card rank to it
     card.cardrank = static_cast<Rank>(ranks.find(tmp.at(0)));
     // Finds the suit and sets the card suit to it
     card.cardsuit = static_cast<Suit>(suits.find(tmp.at(1)));
+    return in;
 }
 
 bool operator==(const Card &c1, const Card &c2) {
+    // Check if the suit and rank of the two cards are equal
     return ((c1.getRank() == c2.getRank()) && (c1.getSuit() == c2.getSuit()));
 }
