@@ -72,9 +72,9 @@ std::istream &operator>>(std::istream &in, Card &card) {
     string tmp;
     in >> tmp;
     // Finds the rank and sets the card rank to it
-    card.cardrank = (Rank)ranks.find(tmp.at(0));
+    card.cardrank = static_cast<Rank>(ranks.find(tmp.at(0)));
     // Finds the suit and sets the card suit to it
-    card.cardsuit = (Suit)suits.find(tmp.at(1));
+    card.cardsuit = static_cast<Suit>(suits.find(tmp.at(1)));
 }
 
 bool operator==(const Card &c1, const Card &c2) {

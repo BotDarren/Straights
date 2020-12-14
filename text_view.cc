@@ -6,13 +6,17 @@
 using namespace std;
 
 View::View (Controller *controller, Board *model) : controller{controller}, model{model} {
+    // Attaches the view as an observer of the model board
     model->attach(this);
 }
 
+// Default destructor, no cleanup seems to be needed as using smart pointers
 View::~View() {}
 
 void View::setPlayers() {
+    // Keeps trying to fill players until there are 4 players
     while (model->getPlayers().size() < 4) {
+        // Which player are we currently filling: this format for input is based on main file from A5
         unsigned int playernum = model->getPlayers().size() + 1;
         cout << "Is Player" << playernum << " a human (h) or a computer (c)?" << endl;
         string s;
@@ -25,13 +29,13 @@ void View::setPlayers() {
         } else if (ptype == "c") {
             controller->addPlayer(PlayerType::Computer);
         } else {
+            // If neither h nor c have been inputed, ask user to try again
             cout << "Invalid Player Type: You can either input [h]uman or [c]omputer" << endl;
         }
     }
 }
 
 void View::nextCommand() {
-    Move tmp();
     // This design for getting input is heavily based on the main file from A5
     string s;
     getline(cin, s);
@@ -46,19 +50,29 @@ void View::nextCommand() {
         controller->endGame();
     } else if (cmd == "play") {
         try {
-                // Temporary card that will be read into
-                Card playcard(Ace,Spade);
-                iss >> playcard;
-                controller->makeMove(playcard,true);
+                if (iss.eof()) {
+                    cerr << "Play failed. Please use play [Card]." << endl;
+                } else {
+                    // Temporary card that will be read into: default to ace of spade
+                    Card playcard(Ace,Spade);
+                    iss >> playcard;
+                    // Make a play using the given card: true indicates play
+                    controller->makeMove(playcard,true);
+                }
         } catch ( ArgExn & e ) {
             cerr << e.message << endl;
         }
     } else if (cmd == "discard") {
         try {
-                // Temporary card that will be read into
-                Card discardcard(Ace,Spade);
-                iss >> discardcard;
-                controller->makeMove(discardcard,false);
+                if (iss.eof()) {
+                    cerr << "Discard failed. Please use discard [Card]." << endl;
+                } else {
+                    // Temporary card that will be read into: default to ace of spade
+                    Card discardcard(Ace,Spade);
+                    iss >> discardcard;
+                    // Make a discard using the given card: false indicates discard
+                    controller->makeMove(discardcard,false);
+                }
         } catch ( ArgExn & e ) {
             cerr << e.message << endl;
         }
@@ -98,8 +112,19 @@ void View::update(State state) {
         }
     } else if (state == State::ENDGAME) {
         vector<shared_ptr<Player>> tmp = model->getPlayers();
+        // Stores the current lowest score: set at 10000, as there is no case in which
+        // a player would have more than 10000 points (could also be int max)
+        int lowestscore = 10000;
+        // Finds the lowest score among the players
         for (int i = 0; i < tmp.size(); i++) {
-            if (tmp.at(i)->totalScore() >= 80) {
+            if (tmp.at(i)->totalScore() < lowestscore) {
+                // If a lower score is found, we set the lowest score to that score
+                lowestscore = tmp.at(i)->totalScore();
+            }
+        }
+        // All players with the lowest score have won
+        for (int i = 0; i < tmp.size(); i++) {
+            if (tmp.at(i)->totalScore() == lowestscore) {
                 cout << "Player" << (i + 1) << " wins!" << endl;
             }
         }

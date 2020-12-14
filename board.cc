@@ -75,7 +75,7 @@ void Board::makeMove(Card c, bool mtype) {
     if (curplayer == 4) {
         curplayer = 0;
     }
-    if (players.at(curplayer)->getType() == PlayerType::Human || roundOver()) {
+    if (players.at(curplayer)->getType() == PlayerType::Human && !roundover && !gameover) {
         notify(State::PRINTCARD);
     }
 }
@@ -131,6 +131,8 @@ PlayerType Board::getPlayerType() {
 void Board::start() {
     cards.clear();
     roundnum = 0;
+    gameover = false;
+    roundover = false;
     nextRound();
 }
 
@@ -138,15 +140,18 @@ void Board::nextRound() {
     firstplay = true;
     cards.clear();
     roundnum++;
+    roundover = false;
     for (shared_ptr<Player> player : players) {
         player->reset();
     }
     deck->shuffle();
     dealCard();
     setStart();
-    notify(State::NEWROUND);
-    if (players.at(curplayer)->getType() == PlayerType::Human) {
-        notify(State::PRINTCARD);
+    if (!gameOver()) {
+        notify(State::NEWROUND);
+        if (players.at(curplayer)->getType() == PlayerType::Human) {
+            notify(State::PRINTCARD);
+        }
     }
 }
 
@@ -164,22 +169,30 @@ int Board::getPlayerScore(int index) {
 }
 
 bool Board::roundOver() {
-   for (int i = 0; i < players.size(); i++) {
+    for (int i = 0; i < players.size(); i++) {
        if (!(players.at(i)->getHand().empty())) {
-           return false;
+            return false;
        }
-   }
-   notify(State::ENDROUND);
-   for (shared_ptr<Player> player : players) {
+    }
+    // Makes sure that if the round is already over, we don't print the message again
+    if (!roundover) {
+        notify(State::ENDROUND);
+    }
+    for (shared_ptr<Player> player : players) {
         player->updateScore();
     }
-   return true;
+    roundover = true;
+    return true;
 }
 
 bool Board::gameOver() {
-     for (int i = 0; i < players.size(); i++) {
+    for (int i = 0; i < players.size(); i++) {
         if (players.at(i)->getScore() >= 80) {
-            notify(State::ENDGAME);
+            // Checks if the game is already over, in other words if we already printed endgame message
+            if (!gameover) {
+                notify(State::ENDGAME);
+            }
+            gameover = true;
             return true;
         }
     }

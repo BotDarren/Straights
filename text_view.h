@@ -3,7 +3,6 @@
 #include "controller.h"
 #include "board.h"
 #include "observer.h"
-#include "move.h"
 #include <string>
 
 class View : public Observer {
@@ -22,6 +21,7 @@ public:
     void setPlayers();
     virtual void update(State state);
     // Prints the table as indicated in the project outline
+    // Prints the current cards on the table and the hand and legal moves of current player
     void printTable();
     // Prints the deck: with 13 cards per line
     void printDeck();

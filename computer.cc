@@ -17,8 +17,10 @@ Move Computer::play(Card c, bool mtype) {
     if (model->firstMove()) {
         Card sevenspade = Card(Seven,Spade);
         tmp.setCard(sevenspade);
-    } else {
+    } else if (tmp.getType() == MoveType::Discard) {
         tmp.setCard(*(hand.at(0)));
+    } else if (tmp.getType() == MoveType::Play) {
+        tmp.setCard(*(validmoves.at(0)));
     }
     return tmp;
 }

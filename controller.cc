@@ -16,7 +16,6 @@ using namespace std;
 
 Controller::Controller( Board* model ) : model{model} {}
 
-
 void Controller::startGame() {
     model->start();
 }
@@ -30,10 +29,12 @@ void Controller::addPlayer( PlayerType type ) {
 }
 
 void Controller::endGame() {
+    // This seems to handle cleanup as well as I used smart pointers
+    // There does not seem to be any memory leaks
     exit(0);
 }
 
-shared_ptr<Player> Controller::RageQuit() {
+void Controller::RageQuit() {
     model->rage();
 }
 
@@ -42,5 +43,6 @@ void Controller::setSeed( int seed ) {
 }
 
 void Controller::makeMove(Card c, bool mtype) {
+    // The mtype represents the type of move: true = play, false = discard
     model->makeMove(c, mtype);
 }

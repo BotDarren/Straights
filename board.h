@@ -30,6 +30,10 @@ class Board : public Subject {
     std::vector<std::shared_ptr<Card>> cards;
     // Which player is playing right now
     int curplayer;
+    // Stores whether the game is over
+    bool gameover;
+    // Indicates whether the current round is over
+    bool roundover;
 public:
     // Constructor without a given seed: this will initialize the deck 
     // with a seed based on the system time

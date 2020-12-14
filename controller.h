@@ -13,8 +13,6 @@
 #ifndef CONTROLLER_H
 #define CONTROLLER_H
 #include "board.h"
-#include "player.h"
-#include "deck.h"
 
 class Board;
 class Player;
@@ -34,7 +32,7 @@ public:
     // Quits the current game: cleanup so no leakage
     void endGame();
     // Happens when a player chooses to rage quit: the human is replaced with a computer
-    std::shared_ptr<Player> RageQuit();
+    void RageQuit();
     // Sets the seed for the shuffling
     void setSeed( int seed );
     // Plays the given card: this is used by a human
