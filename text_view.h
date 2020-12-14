@@ -19,6 +19,7 @@ public:
     virtual ~View();
     // Sets the players: used in the beginning of the game
     void setPlayers();
+    // Updates the view with the given state
     virtual void update(State state);
     // Prints the table as indicated in the project outline
     // Prints the current cards on the table and the hand and legal moves of current player
