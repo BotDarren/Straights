@@ -44,3 +44,35 @@ void Controller::makeMove(Card c, bool mtype) {
     // The mtype represents the type of move: true = play, false = discard
     model->makeMove(c, mtype);
 }
+
+vector<shared_ptr<Player>> Controller::getPlayers() const {
+    return model->getPlayers();
+}
+
+int Controller::getCurrentPlayer() const {
+    return model->getCurrentPlayer();
+}
+
+shared_ptr<Card> Controller::topCard() const {
+    return model->topCard();
+}
+
+shared_ptr<Card> Controller::topDiscard() const {
+    return model->topDiscard();
+}
+
+vector<shared_ptr<Card>> Controller::getPlayed() const {
+    return model->getPlayed();
+}
+
+vector<shared_ptr<Card>> Controller::getHand() const {
+    return model->getHand();
+}
+
+vector<shared_ptr<Card>> Controller::getValidPlays() const {
+    return model->getValidPlays();
+}
+
+vector<shared_ptr<Card>> Controller::getDeck() const {
+    return model->getDeck();
+}

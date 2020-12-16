@@ -40,6 +40,22 @@ public:
     // Plays the given card: there are default values in the event that this is called
     // by a computer. The mtype represents the type of move: true = play, false = discard
     void makeMove(Card c = Card(Ace,Spade), bool mtype = true);
+    // Returns the players on the board
+    std::vector<std::shared_ptr<Player>> getPlayers() const;
+    // Returns the current player
+    int getCurrentPlayer() const;
+    // Returns the top card that has been played
+    std::shared_ptr<Card> topCard() const;
+    // Returns the top card that has been discarded by the current played
+    std::shared_ptr<Card> topDiscard() const;
+    // Returns the played cards of the current player
+    std::vector<std::shared_ptr<Card>> getPlayed() const;
+    // Returns the hand of the current player
+    std::vector<std::shared_ptr<Card>> getHand() const;
+    // Returns the valid plays of the current player
+    std::vector<std::shared_ptr<Card>> getValidPlays() const;
+    // Returns the deck
+    std::vector<std::shared_ptr<Card>> getDeck() const;
 };
 
 #endif

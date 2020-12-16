@@ -15,10 +15,10 @@ View::~View() {}
 
 void View::setPlayers() {
     // Keeps trying to fill players until there are 4 players
-    while (model->getPlayers().size() < 4) {
+    while (controller->getPlayers().size() < 4) {
         // Which player are we currently filling: this format for input is based on main file from A5
-        unsigned int playernum = model->getPlayers().size() + 1;
-        cout << "Is Player" << playernum << " a human (h) or a computer (c)?" << endl;
+        unsigned int playernum = controller->getPlayers().size() + 1;
+        cout << "Is Player" << playernum << " a human (h) or a computer (c)?" << endl << ">";
         // Format of user input based on A5 main file
         string s;
         getline(cin, s);
@@ -37,7 +37,7 @@ void View::setPlayers() {
 }
 
 void View::nextCommand() {
-    // This design for getting input is heavily based on the main file from A5
+    // This design for getting input is based on the main file from A5
     string s;
     getline(cin, s);
     istringstream iss{s};
@@ -62,7 +62,7 @@ void View::nextCommand() {
                     controller->makeMove(playcard,true);
                 }
         } catch ( ArgExn & e ) {
-            cerr << e.message << endl;
+            cerr << e.message << endl << ">";
         }
     } else if (cmd == "discard") {
         try {
@@ -77,11 +77,11 @@ void View::nextCommand() {
                     controller->makeMove(discardcard,false);
                 }
         } catch ( ArgExn & e ) {
-            cerr << e.message << endl;
+            cerr << e.message << endl << ">";
         }
-    } else {
-        // Prompt if the command is not recognized
-        cerr << "Unrecognized command " << cmd << "!" << endl;
+    } else if (cmd != "") {
+            // Prompt if the command is not recognized
+            cerr << "Unrecognized command " << cmd << "!" << endl;
     }
 }
 
@@ -89,21 +89,21 @@ void View::update(State state) {
     if (state == State::PRINTTABLE) {
         printTable();
     } else if (state == State::NEWROUND) {
-        int playernum = model->getCurrentPlayer() + 1;
+        int playernum = controller->getCurrentPlayer() + 1;
         cout << "A new round has begins. It's Player" << playernum << "'s turn to play." << endl;
     } else if (state == State::RAGEQUIT) {
-        int playernum = model->getCurrentPlayer() + 1;
+        int playernum = controller->getCurrentPlayer() + 1;
         cout << "Player" << playernum << " ragequits. A computer will now take over." << endl;
     } else if (state == State::PLAY) {
-        int playernum = model->getCurrentPlayer() + 1;
-        Card topplayed = *(model->topCard());
+        int playernum = controller->getCurrentPlayer() + 1;
+        Card topplayed = *(controller->topCard());
         cout << "Player" << playernum << " plays " << topplayed << "." << endl;
     } else if (state == State::DISCARD) {
-        int playernum = model->getCurrentPlayer() + 1;
-        Card topdiscarded = *(model->topDiscard());
+        int playernum = controller->getCurrentPlayer() + 1;
+        Card topdiscarded = *(controller->topDiscard());
         cout << "Player" << playernum << " discards " << topdiscarded << "." << endl;
     } else if (state == State::ENDROUND) {
-        vector<shared_ptr<Player>> tmp = model->getPlayers();
+        vector<shared_ptr<Player>> tmp = controller->getPlayers();
         // Iterates through the players
         for (unsigned int i = 0; i < tmp.size(); i++) {
             // i+1 as i is the index starting at 0
@@ -120,7 +120,7 @@ void View::update(State state) {
             cout << tmp.at(i)->getScore() << " + " << tmp.at(i)->roundScore() << " = " << tmp.at(i)->totalScore() << endl;
         }
     } else if (state == State::ENDGAME) {
-        vector<shared_ptr<Player>> tmp = model->getPlayers();
+        vector<shared_ptr<Player>> tmp = controller->getPlayers();
         // Stores the current lowest score: set at 10000, as there is no case in which
         // a player would have more than 10000 points (could also be int max)
         int lowestscore = 10000;
@@ -142,9 +142,9 @@ void View::update(State state) {
 }
 
 void View::printTable() {
-    vector<shared_ptr<Card>> curtable = model->getPlayed();
-    vector<shared_ptr<Card>> playerhand = model->getHand();
-    vector<shared_ptr<Card>> validplays = model->getValidPlays();
+    vector<shared_ptr<Card>> curtable = controller->getPlayed();
+    vector<shared_ptr<Card>> playerhand = controller->getHand();
+    vector<shared_ptr<Card>> validplays = controller->getValidPlays();
     cout << "Cards on the table:" << endl;
     cout << "Clubs: ";
     // Prints all the club cards that have been played
@@ -237,12 +237,12 @@ void View::printTable() {
     for (shared_ptr<Card> card : validplays) {
         cout << *card << " ";
     }
-    cout << endl;
+    cout << endl << ">";
 }
 
 void View::printDeck() {
     // Gets the cards from the deck
-    vector<shared_ptr<Card>> tmpdeck = model->getDeck();
+    vector<shared_ptr<Card>> tmpdeck = controller->getDeck();
     for (unsigned int i = 0; i < tmpdeck.size(); i++) {
         // If we have printed 13 cards then we print a new line
         if (i % 13 == 0 && i > 0) {
@@ -252,5 +252,5 @@ void View::printDeck() {
         cout << *(tmpdeck.at(i)) << " ";
     }
     // At the end print a new line
-    cout << endl;
+    cout << endl << ">";
 }
